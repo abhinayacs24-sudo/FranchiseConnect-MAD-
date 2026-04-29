@@ -60,8 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         if (email.contains("@") && password.length() >= 6) {
             Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
             
-            // 3. Navigate to Dashboard/Main Page
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            // 3. Navigate to Dashboard Page
+            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
