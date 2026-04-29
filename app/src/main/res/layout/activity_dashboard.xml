@@ -119,12 +119,14 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
                 <ImageView
                     android:id="@+id/ivAdCarousel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@android:drawable/ic_menu_gallery" />
+                    android:src="@drawable/ad1" />
+
                 <ImageButton
                     android:id="@+id/btnAdPrev"
                     android:layout_width="40dp"

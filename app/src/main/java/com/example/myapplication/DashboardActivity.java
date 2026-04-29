@@ -28,13 +28,12 @@ public class DashboardActivity extends AppCompatActivity {
     private View btnNavLogout;
 
     private int currentAdIndex = 0;
-    // Using default android resources as placeholders for the images provided in React code
     private int[] adImages = {
-        android.R.drawable.ic_menu_gallery, 
-        android.R.drawable.ic_menu_camera, 
-        android.R.drawable.ic_menu_slideshow,
-        android.R.drawable.ic_menu_manage,
-        android.R.drawable.ic_menu_info_details
+        R.drawable.ad1, 
+        R.drawable.ad2, 
+        R.drawable.ad3,
+        R.drawable.ad4,
+        R.drawable.ad5
     };
     private String[] adUrls = {
         "https://franchising.bk.com/franchise-fee",
@@ -59,6 +58,12 @@ public class DashboardActivity extends AppCompatActivity {
         {"MSME", "https://www.msme.in/"}
     };
 
+    private int[] similarSiteImages = {
+        R.drawable.sim1, R.drawable.sim2, R.drawable.sim3, R.drawable.sim4,
+        R.drawable.sim5, R.drawable.sim6, R.drawable.sim7, R.drawable.sim8,
+        R.drawable.sim9, R.drawable.sim10, R.drawable.sim11, R.drawable.sim12
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +83,7 @@ public class DashboardActivity extends AppCompatActivity {
         setupCategories();
         setupAdCarousel();
         setupSimilarSites();
+        setupBrands();
 
         // Navigation
         btnNavProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
@@ -94,8 +100,23 @@ public class DashboardActivity extends AppCompatActivity {
         findViewById(R.id.btnAdNext).setOnClickListener(v -> nextAd());
         findViewById(R.id.btnAdPrev).setOnClickListener(v -> prevAd());
         
-        // Mocking user name
+        ivAdCarousel.setImageResource(adImages[0]);
         tvWelcomeDashboard.setText("Welcome, User!");
+    }
+
+    private void setupBrands() {
+        List<Brand> brandList = new ArrayList<>();
+        // Using sim images as logos for brands
+        brandList.add(new Brand("Burger King", "Food & Beverages", "₹1.5Cr - 3Cr", R.drawable.ad1));
+        brandList.add(new Brand("Lakme Salon", "Beauty & Salon", "₹50L - 1Cr", R.drawable.ad4));
+        brandList.add(new Brand("Tealogy", "Food & Beverages", "₹10L - 20L", R.drawable.ad3));
+        brandList.add(new Brand("VRL Logistics", "Logistics", "₹20L - 50L", R.drawable.ad2));
+        brandList.add(new Brand("T-R Autoworks", "Automobiles", "₹15L - 30L", R.drawable.ad5));
+        brandList.add(new Brand("MSME Center", "Education", "₹5L - 10L", R.drawable.sim12));
+
+        BrandAdapter adapter = new BrandAdapter(brandList);
+        rvBrands.setLayoutManager(new GridLayoutManager(this, 2));
+        rvBrands.setAdapter(adapter);
     }
 
     private void setupCategories() {
@@ -129,7 +150,6 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
-        // Auto slide every 5 seconds as in React code
         final Handler handler = new Handler();
         final Runnable runnable = new Runnable() {
             @Override
@@ -152,19 +172,23 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void setupSimilarSites() {
-        for (String[] site : similarSites) {
+        gridSimilarSites.removeAllViews();
+        for (int i = 0; i < similarSites.length; i++) {
+            final int index = i;
             ImageView iv = new ImageView(this);
-            iv.setImageResource(android.R.drawable.ic_menu_view); // Placeholder for sim1.png etc.
-            iv.setPadding(16, 16, 16, 16);
+            iv.setImageResource(similarSiteImages[i]);
+            iv.setAdjustViewBounds(true);
+            iv.setPadding(8, 8, 8, 8);
             
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
             params.height = GridLayout.LayoutParams.WRAP_CONTENT;
             params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+            params.setMargins(4, 4, 4, 4);
             iv.setLayoutParams(params);
 
             iv.setOnClickListener(v -> {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(site[1]));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(similarSites[index][1]));
                 startActivity(intent);
             });
             gridSimilarSites.addView(iv);
