@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A1C2D">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- NAVBAR -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#020617"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/logo"
+                android:contentDescription="Logo" />
+
+            <TextView
+                android:id="@+id/tvProfileNavTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:text="FranchiseConnect"
+                android:textColor="#60a5fa"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnProfileLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:textSize="12sp"
+                android:backgroundTint="#ff4444"
+                android:textColor="#FFFFFF"
+                style="?android:attr/borderlessButtonStyle" />
+        </LinearLayout>
+
+        <!-- PROFILE CARD -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardBackgroundColor="#1e293b"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/ivProfilePhoto"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@android:drawable/ic_menu_gallery"
+                        app:civ_border_width="2dp"
+                        app:civ_border_color="#60a5fa" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+
+                        <TextView
+                            android:id="@+id/tvProfileName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="John Doe"
+                            android:textColor="#FFFFFF"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvProfileEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="john.doe@example.com"
+                            android:textColor="#93c5fd"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#334155"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Profile Info Display -->
+                <GridLayout
+                    android:id="@+id/layoutProfileDisplay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="1">
+
+                    <TextView android:text="Mobile" android:textColor="#93c5fd" android:textSize="12sp" />
+                    <TextView android:id="@+id/tvDisplayMobile" android:text="Not provided" android:textColor="#FFFFFF" android:layout_marginBottom="12dp" />
+
+                    <TextView android:text="Gender" android:textColor="#93c5fd" android:textSize="12sp" />
+                    <TextView android:id="@+id/tvDisplayGender" android:text="Not provided" android:textColor="#FFFFFF" android:layout_marginBottom="12dp" />
+
+                    <TextView android:text="Location" android:textColor="#93c5fd" android:textSize="12sp" />
+                    <TextView android:id="@+id/tvDisplayLocation" android:text="Not provided" android:textColor="#FFFFFF" android:layout_marginBottom="12dp" />
+
+                    <TextView android:text="Qualification" android:textColor="#93c5fd" android:textSize="12sp" />
+                    <TextView android:id="@+id/tvDisplayQualification" android:text="Not provided" android:textColor="#FFFFFF" android:layout_marginBottom="12dp" />
+                </GridLayout>
+
+                <Button
+                    android:id="@+id/btnEditProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Edit Profile"
+                    android:backgroundTint="#3b82f6"
+                    android:textColor="#FFFFFF"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- MY BRANDS SECTION -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="My Brands"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnAddBrand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+ Upload New"
+                    android:textSize="12sp"
+                    android:backgroundTint="#10b981"
+                    android:textColor="#FFFFFF"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+
+            <!-- Brands List (Simplified for now) -->
+            <LinearLayout
+                android:id="@+id/layoutBrandsList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/tvNoBrands"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="32dp"
+                android:text="You haven't uploaded any brands yet."
+                android:textColor="#94a3b8"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

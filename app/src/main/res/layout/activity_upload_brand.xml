@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A1C2D">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/logo"
+                android:contentDescription="Logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="FranchiseConnect"
+                android:textColor="#60a5fa"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload Your Brand"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Basic Information Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Basic Information"
+            android:textColor="#93c5fd"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etBrandName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Brand Name *"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <Spinner
+            android:id="@+id/spCategory"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etSubCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Sub Category *"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etAboutBrand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="About Brand *"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Investment Details Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Investment Details"
+            android:textColor="#93c5fd"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+            <EditText
+                android:id="@+id/etMinInvestment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Min Inv (₹) *"
+                android:inputType="number"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#4DFFFFFF"
+                android:backgroundTint="#FFFFFF"/>
+            <EditText
+                android:id="@+id/etMaxInvestment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Max Inv (₹) *"
+                android:inputType="number"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#4DFFFFFF"
+                android:backgroundTint="#FFFFFF"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etBrandFee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Brand Fee (₹) *"
+            android:inputType="number"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etAnticipatedReturn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Anticipated Return (%) *"
+            android:inputType="number"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etPaybackPeriod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Payback Period (e.g., 2-3 years) *"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Operational Details -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Operational Details"
+            android:textColor="#93c5fd"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etAreaRequired"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Area Required *"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etFranchiseOutlets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Number of Outlets *"
+            android:inputType="number"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etEstablishedYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Established Year *"
+            android:inputType="number"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etOperationCommenced"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Operation Commenced On *"
+            android:focusable="false"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etFranchiseCommenced"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Franchise Commenced On *"
+            android:focusable="false"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#4DFFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <CheckBox
+            android:id="@+id/cbIsRenewable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Is Term Renewable"
+            android:textColor="#FFFFFF"
+            android:buttonTint="#3b82f6"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Media Upload -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Media Files (JPG Only)"
+            android:textColor="#93c5fd"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnUploadLogo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload Brand Logo *"
+            android:backgroundTint="#1e293b"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/btnUploadPhotos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload Brand Photos (Up to 5) *"
+            android:backgroundTint="#1e293b"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Actions -->
+        <Button
+            android:id="@+id/btnSubmitBrand"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Upload Brand"
+            android:backgroundTint="#3b82f6"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Cancel"
+            android:backgroundTint="#1e293b"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="24dp"/>
+
+    </LinearLayout>
+</ScrollView>
