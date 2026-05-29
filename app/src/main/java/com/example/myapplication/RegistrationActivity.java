@@ -51,6 +51,17 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        // Adjust for Edge-to-Edge Status Bar Insets
+        View header = findViewById(R.id.layoutHeader);
+        if (header != null) {
+            int originalPaddingTop = header.getPaddingTop();
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(header, (v, insets) -> {
+                androidx.core.graphics.Insets systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+                v.setPadding(v.getPaddingLeft(), systemBars.top + originalPaddingTop, v.getPaddingRight(), v.getPaddingBottom());
+                return insets;
+            });
+        }
+
         // Initialize Views
         etFirstName = findViewById(R.id.etFirstName);
         etMiddleName = findViewById(R.id.etMiddleName);
@@ -114,7 +125,43 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void handleRegistration() {
         if (validateFields()) {
-            Toast.makeText(this, "Registration Successful!", Toast.LENGTH_LONG).show();
+            String firstName = etFirstName.getText().toString().trim();
+            String middleName = etMiddleName.getText().toString().trim();
+            String lastName = etLastName.getText().toString().trim();
+            String dob = etDob.getText().toString().trim();
+            String city = etCity.getText().toString().trim();
+            String pincode = etPincode.getText().toString().trim();
+            String address = etAddress.getText().toString().trim();
+            String occupation = etOccupation.getText().toString().trim();
+            String mobile = etMobile.getText().toString().trim();
+            String email = etEmail.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
+            
+            int genderId = rgGender.getCheckedRadioButtonId();
+            String gender = (genderId == R.id.rbMale) ? "Male" : (genderId == R.id.rbFemale ? "Female" : "Other");
+            String state = spState.getSelectedItem().toString();
+            String qualification = spQualification.getSelectedItem().toString();
+
+            User user = new User(firstName, middleName, lastName, dob, city, pincode, address, occupation, mobile, email, password, gender, state, qualification);
+
+            ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+            apiService.register(user).enqueue(new retrofit2.Callback<Void>() {
+                @Override
+                public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(RegistrationActivity.this, "Registration Successful!", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(RegistrationActivity.this, "Registration Failed: " + response.message(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+                    Toast.makeText(RegistrationActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 

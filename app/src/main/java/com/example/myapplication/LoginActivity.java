@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        // 1. Basic Validation
         if (TextUtils.isEmpty(email)) {
             etEmail.setError("Email is required");
             return;
@@ -55,18 +54,42 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // 2. Mock Login Logic
-        // In a real app, you would send these to your server (e.g., http://10.0.2.2:5000/api/auth/login)
-        if (email.contains("@") && password.length() >= 6) {
-            Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
-            
-            // 3. Navigate to Dashboard Page
-            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        } else {
-            Toast.makeText(this, "Invalid Email or Password", Toast.LENGTH_SHORT).show();
-        }
+        User loginUser = new User(email, password);
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        
+        apiService.login(loginUser).enqueue(new retrofit2.Callback<UserResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<UserResponse> call, retrofit2.Response<UserResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getUser() != null) {
+                    // Save User ID and Token in SharedPreferences
+                    String userId = response.body().getUser().getId();
+                    String token = response.body().getToken();
+                    getSharedPreferences("FranchiseConnect", MODE_PRIVATE)
+                        .edit()
+                        .putString("userId", userId)
+                        .putString("userName", response.body().getUser().getName())
+                        .putString("token", token)
+                        .apply();
+
+                    Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+                    
+                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    String errorMsg = "Invalid Email or Password";
+                    if (response.body() != null && response.body().getMessage() != null) {
+                        errorMsg = response.body().getMessage();
+                    }
+                    Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<UserResponse> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

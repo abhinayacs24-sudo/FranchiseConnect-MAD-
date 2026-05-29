@@ -39,6 +39,12 @@
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".FavoritesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SecondActivity"
+            android:exported="false" />
+        <activity
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
     </application>

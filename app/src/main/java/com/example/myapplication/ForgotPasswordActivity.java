@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -13,6 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Calendar;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
@@ -21,14 +23,14 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private Spinner spGender, spState;
     private Button btnVerifyDetails, btnResetPassword;
     private TextView tvBackToLogin;
+    private String verifiedUserId = null;
 
     private String[] indianStates = {
             "Select State", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
             "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra",
             "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim",
             "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-            "Andaman & Nicobar Islands", "Chandigarh", "Dadra & Nagar Haveli", "Daman & Diu",
-            "Delhi", "Jammu & Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+            "Delhi", "Jammu & Kashmir", "Ladakh"
     };
 
     private String[] genders = {"Select Gender", "Male", "Female", "Other"};
@@ -77,23 +79,70 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         btnVerifyDetails.setOnClickListener(v -> {
             if (validateVerificationFields()) {
-                // In a real app, you'd call an API here. 
-                // For now, we simulate success and move to reset step.
-                llVerifyStep.setVisibility(View.GONE);
-                llResetStep.setVisibility(View.VISIBLE);
-                Toast.makeText(this, "Details Verified. Set New Password.", Toast.LENGTH_SHORT).show();
+                verifyDetails();
             }
         });
 
         btnResetPassword.setOnClickListener(v -> {
             if (validateResetFields()) {
-                // In a real app, call the reset API.
-                Toast.makeText(this, "Password Reset Successfully!", Toast.LENGTH_LONG).show();
-                finish(); // Close activity and go back to Login
+                resetPassword();
             }
         });
 
         tvBackToLogin.setOnClickListener(v -> finish());
+    }
+
+    private void verifyDetails() {
+        ForgotPasswordRequest request = new ForgotPasswordRequest(
+                etFpEmail.getText().toString().trim(),
+                etDob.getText().toString().trim(),
+                spState.getSelectedItem().toString(),
+                etCity.getText().toString().trim(),
+                etPinCode.getText().toString().trim(),
+                spGender.getSelectedItem().toString()
+        );
+
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        apiService.verifyDetails(request).enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    verifiedUserId = response.body().getUser().getId();
+                    llVerifyStep.setVisibility(View.GONE);
+                    llResetStep.setVisibility(View.VISIBLE);
+                    Toast.makeText(ForgotPasswordActivity.this, "Details Verified. Set New Password.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ForgotPasswordActivity.this, "Verification Failed: Details do not match", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Toast.makeText(ForgotPasswordActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void resetPassword() {
+        ForgotPasswordRequest request = new ForgotPasswordRequest(verifiedUserId, etNewPassword.getText().toString().trim());
+
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        apiService.resetPassword(request).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(ForgotPasswordActivity.this, "Password Reset Successfully!", Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+                    Toast.makeText(ForgotPasswordActivity.this, "Reset Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(ForgotPasswordActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private boolean validateVerificationFields() {

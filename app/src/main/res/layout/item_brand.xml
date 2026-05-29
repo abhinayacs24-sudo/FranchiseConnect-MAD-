@@ -14,12 +14,26 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <ImageView
-            android:id="@+id/ivBrandLogo"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/logo" />
+            android:layout_height="120dp">
+            <ImageView
+                android:id="@+id/ivBrandLogo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:src="@drawable/logo" />
+            <ImageView
+                android:id="@+id/btnAddToFav"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="8dp"
+                android:src="@android:drawable/btn_star_big_off"
+                android:padding="4dp"
+                android:background="@android:drawable/screen_background_dark_transparent"
+                app:tint="#60a5fa" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/tvBrandName"

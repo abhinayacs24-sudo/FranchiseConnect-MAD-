@@ -27,6 +27,10 @@ public class DashboardActivity extends AppCompatActivity {
     private Button btnDashUploadBrand;
     private View btnNavLogout;
 
+    private List<Brand> allBrands = new ArrayList<>();
+    private BrandAdapter adapter;
+    private List<Button> categoryButtons = new ArrayList<>();
+
     private int currentAdIndex = 0;
     private int[] adImages = {
         R.drawable.ad1, 
@@ -69,6 +73,17 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        // Adjust for Edge-to-Edge Status Bar Insets
+        View navbar = findViewById(R.id.layoutNavbar);
+        if (navbar != null) {
+            int originalPaddingTop = navbar.getPaddingTop();
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(navbar, (v, insets) -> {
+                androidx.core.graphics.Insets systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+                v.setPadding(v.getPaddingLeft(), systemBars.top + originalPaddingTop, v.getPaddingRight(), v.getPaddingBottom());
+                return insets;
+            });
+        }
+
         // Initialize Views
         ivAdCarousel = findViewById(R.id.ivAdCarousel);
         tvWelcomeDashboard = findViewById(R.id.tvWelcomeDashboard);
@@ -86,11 +101,21 @@ public class DashboardActivity extends AppCompatActivity {
         setupBrands();
 
         // Navigation
-        btnNavProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
-        btnNavFavorites.setOnClickListener(v -> Toast.makeText(this, "Favorites clicked", Toast.LENGTH_SHORT).show());
+        btnNavProfile.setOnClickListener(v -> {
+            Toast.makeText(this, "Opening Profile...", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, ProfileActivity.class));
+        });
+        
+        btnNavFavorites.setOnClickListener(v -> {
+            Toast.makeText(this, "Opening Favorites...", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, FavoritesActivity.class));
+        });
+        
         btnDashUploadBrand.setOnClickListener(v -> startActivity(new Intent(this, UploadBrandActivity.class)));
         
         btnNavLogout.setOnClickListener(v -> {
+            Toast.makeText(this, "Logging out...", Toast.LENGTH_SHORT).show();
+            getSharedPreferences("FranchiseConnect", MODE_PRIVATE).edit().clear().apply();
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -104,19 +129,77 @@ public class DashboardActivity extends AppCompatActivity {
         tvWelcomeDashboard.setText("Welcome, User!");
     }
 
-    private void setupBrands() {
-        List<Brand> brandList = new ArrayList<>();
-        // Using sim images as logos for brands
-        brandList.add(new Brand("Burger King", "Food & Beverages", "₹1.5Cr - 3Cr", R.drawable.ad1));
-        brandList.add(new Brand("Lakme Salon", "Beauty & Salon", "₹50L - 1Cr", R.drawable.ad4));
-        brandList.add(new Brand("Tealogy", "Food & Beverages", "₹10L - 20L", R.drawable.ad3));
-        brandList.add(new Brand("VRL Logistics", "Logistics", "₹20L - 50L", R.drawable.ad2));
-        brandList.add(new Brand("T-R Autoworks", "Automobiles", "₹15L - 30L", R.drawable.ad5));
-        brandList.add(new Brand("MSME Center", "Education", "₹5L - 10L", R.drawable.sim12));
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the brands list every time the user returns to this screen
+        setupBrands();
+    }
 
-        BrandAdapter adapter = new BrandAdapter(brandList);
-        rvBrands.setLayoutManager(new GridLayoutManager(this, 2));
-        rvBrands.setAdapter(adapter);
+    private void setupBrands() {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        apiService.getBrands().enqueue(new retrofit2.Callback<List<Brand>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<Brand>> call, retrofit2.Response<List<Brand>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    allBrands = response.body();
+                    // Copy to prevent modifications directly to allBrands list
+                    List<Brand> displayList = new ArrayList<>(allBrands);
+                    adapter = new BrandAdapter(displayList, new BrandAdapter.OnBrandClickListener() {
+                        @Override
+                        public void onBrandClick(Brand brand) {
+                            Intent intent = new Intent(DashboardActivity.this, SecondActivity.class);
+                            intent.putExtra("brandName", brand.getName());
+                            intent.putExtra("brandCategory", brand.getCategory());
+                            intent.putExtra("brandInvestment", brand.getInvestment());
+                            intent.putExtra("brandLogoUrl", brand.getLogoUrl());
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onFavoriteClick(Brand brand) {
+                            addToFavorites(brand);
+                        }
+                    });
+                    rvBrands.setLayoutManager(new GridLayoutManager(DashboardActivity.this, 2));
+                    rvBrands.setAdapter(adapter);
+                } else {
+                    Toast.makeText(DashboardActivity.this, "Failed to load brands", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<Brand>> call, Throwable t) {
+                Toast.makeText(DashboardActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void addToFavorites(Brand brand) {
+        String userId = getSharedPreferences("FranchiseConnect", MODE_PRIVATE).getString("userId", null);
+        if (userId == null) {
+            Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        FavoriteRequest request = new FavoriteRequest(userId, brand.getId());
+        
+        apiService.addFavorite(request).enqueue(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(DashboardActivity.this, brand.getName() + " added to favorites!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(DashboardActivity.this, "Already in favorites", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+                Toast.makeText(DashboardActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupCategories() {
@@ -125,12 +208,21 @@ public class DashboardActivity extends AppCompatActivity {
             "Health & Wellness", "Education", "Beauty & Salon", 
             "Automobiles", "Electronics", "Real Estate"
         };
+        categoryButtons.clear();
+        layoutCategories.removeAllViews();
+        
         for (String cat : categories) {
             Button btn = new Button(this);
             btn.setText(cat);
             btn.setAllCaps(false);
             btn.setTextColor(getResources().getColor(android.R.color.white));
-            btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1A60A5FA")));
+            
+            // Set first button "All Categories" as default selected
+            if (cat.equals("All Categories")) {
+                btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#3B82F6"))); // Solid Blue
+            } else {
+                btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1A60A5FA"))); // Semi-transparent
+            }
             
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -139,7 +231,32 @@ public class DashboardActivity extends AppCompatActivity {
             params.setMargins(8, 0, 8, 0);
             btn.setLayoutParams(params);
             
-            btn.setOnClickListener(v -> Toast.makeText(this, "Filtering by: " + cat, Toast.LENGTH_SHORT).show());
+            btn.setOnClickListener(v -> {
+                // Update button visual states
+                for (Button b : categoryButtons) {
+                    b.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1A60A5FA")));
+                }
+                btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#3B82F6")));
+                
+                // Filter logic
+                if (adapter != null) {
+                    if (cat.equals("All Categories")) {
+                        adapter.updateList(new ArrayList<>(allBrands));
+                    } else {
+                        List<Brand> filtered = new ArrayList<>();
+                        for (Brand b : allBrands) {
+                            if (b.getCategory() != null && b.getCategory().equalsIgnoreCase(cat)) {
+                                filtered.add(b);
+                            }
+                        }
+                        adapter.updateList(filtered);
+                        if (filtered.isEmpty()) {
+                            Toast.makeText(this, "No brands found in " + cat, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
+            categoryButtons.add(btn);
             layoutCategories.addView(btn);
         }
     }

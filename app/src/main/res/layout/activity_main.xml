@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0A1C2D">
+    android:background="#0A1C2D"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,6 +13,7 @@
 
         <!-- NAVBAR -->
         <LinearLayout
+            android:id="@+id/layoutNavbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#020617"
@@ -40,17 +42,18 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <TextView
+            <Button
                 android:id="@+id/btnNavLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:clickable="true"
-                android:focusable="true"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@android:color/transparent"
                 android:text="Login"
+                android:textAllCaps="false"
                 android:textColor="#60a5fa"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                style="?android:attr/borderlessButtonStyle" />
 
             <Button
                 android:id="@+id/btnNavRegister"
